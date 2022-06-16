@@ -1,6 +1,7 @@
 import { Fragment, Component } from "react";
 import classes from "./UserFinder.module.css";
 import Users from "./Users";
+import UsersContext from "../store/user-context";
 import ErrorBoundary from "./ErrorBoundary";
 
 const DUMMY_USERS = [
@@ -10,6 +11,7 @@ const DUMMY_USERS = [
 ];
 
 class UserFinder extends Component {
+  static contextType = UsersContext;
   constructor() {
     super();
     this.state = {
@@ -22,7 +24,7 @@ class UserFinder extends Component {
 
   componentDidMount() {
     //Can be used to send a HTTP request to fetch some data
-    // this.setState({filteredUsers: DUMMY_USERS})  updating state after the data is fetched
+    // this.setState({filteredUsers: this.context.users})  updating state after the data is fetched
   }
   componentDidUpdate(prevProps, prevState) {
     //This will cause infinite loop as we are triggerinig on component update then the filtered users are update which will cause the same funtion
@@ -36,7 +38,7 @@ class UserFinder extends Component {
     // to overcome above issue we will trigger the state change only on the searchterm change
     if (prevState.searchTerm !== this.state.searchTerm) {
       this.setState({
-        filteredUsers: DUMMY_USERS.filter((user) =>
+        filteredUsers: this.context.users.filter((user) =>
           user.name.includes(this.state.searchTerm)
         ),
       });
